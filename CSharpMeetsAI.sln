@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.0.11018.127 d18.0
+VisualStudioVersion = 18.0.11018.127
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}"
 EndProject
@@ -15,6 +15,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.AppHost", "src\CSharpMeetsAI.AppHost\CSharpMeetsAI.AppHost.csproj", "{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.Api", "src\CSharpMeetsAI.Api\CSharpMeetsAI.Api.csproj", "{F9BF1019-D014-0028-6AA1-C4C2DED14654}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.OllamaService", "src\CSharpMeetsAI.OllamaService\CSharpMeetsAI.OllamaService.csproj", "{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.AIOrchestrator", "src\CSharpMeetsAI.AIOrchestrator\CSharpMeetsAI.AIOrchestrator.csproj", "{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -34,6 +38,14 @@ Global
 		{F9BF1019-D014-0028-6AA1-C4C2DED14654}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F9BF1019-D014-0028-6AA1-C4C2DED14654}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F9BF1019-D014-0028-6AA1-C4C2DED14654}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -42,6 +54,8 @@ Global
 		{FF8A561B-3843-41D4-999B-A132154EBCC8} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
 		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
 		{F9BF1019-D014-0028-6AA1-C4C2DED14654} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
+		{2AF4D9BF-3D05-4F11-9D58-898EEC8682F1} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
+		{B3CF0A00-09AC-47A2-8CB3-0BC4DC1D9A0D} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {63DC8152-F271-4B23-96CE-1050583E77FB}
