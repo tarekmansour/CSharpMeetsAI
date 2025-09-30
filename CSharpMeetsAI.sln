@@ -1,0 +1,42 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.0.11018.127 d18.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.ServiceDefaults", "src\CSharpMeetsAI.ServiceDefaults\CSharpMeetsAI.ServiceDefaults.csproj", "{FF8A561B-3843-41D4-999B-A132154EBCC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CB08399F-7CCB-4DC8-B21B-5B55896E6888}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Packages.props = Directory.Packages.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CSharpMeetsAI.AppHost", "src\CSharpMeetsAI.AppHost\CSharpMeetsAI.AppHost.csproj", "{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FF8A561B-3843-41D4-999B-A132154EBCC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FF8A561B-3843-41D4-999B-A132154EBCC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FF8A561B-3843-41D4-999B-A132154EBCC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FF8A561B-3843-41D4-999B-A132154EBCC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{FF8A561B-3843-41D4-999B-A132154EBCC8} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
+		{1141ACF9-D69A-43E0-9436-1D9EDD4F875A} = {B8FF7BF3-0029-4730-B7EC-04E7EBD0F999}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {63DC8152-F271-4B23-96CE-1050583E77FB}
+	EndGlobalSection
+EndGlobal
