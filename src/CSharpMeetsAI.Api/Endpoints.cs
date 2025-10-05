@@ -22,14 +22,15 @@ public static class Endpoints
         group.MapPost("v2/chat", async (
             [FromBody] string prompt,
             ChatService chatService,
-            HttpResponse response) =>
+            HttpResponse response,
+            CancellationToken cancellationToken) =>
         {
             if (string.IsNullOrWhiteSpace(prompt))
             {
                 return Results.BadRequest("Prompt cannot be empty.");
             }
 
-            return await chatService.Chat(prompt, response);
+            return await chatService.Chat(prompt, response, cancellationToken);
         });
     }
 }

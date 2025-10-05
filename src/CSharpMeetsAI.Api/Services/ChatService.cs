@@ -4,35 +4,46 @@ namespace CSharpMeetsAI.Api.Services;
 
 public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
 {
-    public async Task<IResult> Chat(string prompt, HttpResponse response)
+    private const string ContentType = "text/plain; charset=utf-8";
+    private readonly IChatClient _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
+    private readonly ILogger<ChatService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+
+    public async Task<IResult> Chat(string prompt, HttpResponse response, CancellationToken cancellationToken = default)
     {
-        response.ContentType = "text/plain; charset=utf-8";
+        response.ContentType = ContentType;
 
         try
         {
-            logger.LogInformation("Streaming chat response started. Prompt: {Prompt}", prompt);
+            _logger.LogInformation("Streaming chat response started. Prompt: {Prompt}", prompt);
+            await StreamResponseAsync(prompt, response, cancellationToken);
+            _logger.LogInformation("Streaming chat response completed successfully.");
 
-            await foreach (var message in chatClient.GetStreamingResponseAsync(prompt))
-            {
-                if (!string.IsNullOrEmpty(message.Text))
-                {
-                    await response.WriteAsync(message.Text);
-                    await response.Body.FlushAsync();
-                }
-            }
-
-            logger.LogInformation("Streaming chat response completed successfully.");
             return Results.Empty;
         }
         catch (OperationCanceledException ex)
         {
-            logger.LogWarning(ex, "Chat stream canceled by client.");
-            throw;
+            _logger.LogWarning(ex, "Chat stream canceled by client.");
+            return Results.StatusCode(499); // Client Closed Request
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            logger.LogError(ex, "Error while processing chat stream.");
-            throw;
+            _logger.LogError(ex, "Error while processing chat stream.");
+            return Results.Problem(
+                title: "Chat Processing Error",
+                detail: "An error occurred while processing the chat stream.",
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+    }
+
+    private async Task StreamResponseAsync(string prompt, HttpResponse response, CancellationToken cancellationToken)
+    {
+        await foreach (var message in _chatClient.GetStreamingResponseAsync(prompt).WithCancellation(cancellationToken))
+        {
+            if (!string.IsNullOrEmpty(message.Text))
+            {
+                await response.WriteAsync(message.Text, cancellationToken);
+                await response.Body.FlushAsync(cancellationToken);
+            }
         }
     }
 }
