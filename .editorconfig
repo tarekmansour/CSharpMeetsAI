@@ -1,0 +1,36 @@
+root = true
+
+###########################################################
+# All files rules
+###########################################################
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+###########################################################
+# CSharp files rules
+###########################################################
+[*.cs]
+dotnet_sort_using_directives_alphabetically = true
+csharp_new_line_between_query_expression_clauses = true
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+dotnet_remove_unnecessary_imports = true
+csharp_prefer_braces = true:suggestion
+
+###########################################################
+# 🚀 Performance
+###########################################################
+dotnet_diagnostic.CA1851.severity = warning
+dotnet_diagnostic.CA1836.severity = warning
+dotnet_diagnostic.CA1829.severity = warning
+
+###########################################################
+# 🔐 Security
+###########################################################
+dotnet_diagnostic.CA2000.severity = warning
+dotnet_diagnostic.CA2100.severity = warning
+dotnet_diagnostic.CA2153.severity = warning
