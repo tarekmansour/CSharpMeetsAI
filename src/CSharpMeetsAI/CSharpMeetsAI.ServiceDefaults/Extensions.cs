@@ -36,11 +36,7 @@ public static class Extensions
             http.AddServiceDiscovery();
         });
 
-        // Uncomment the following to restrict the allowed schemes for service discovery.
-        // builder.Services.Configure<ServiceDiscoveryOptions>(options =>
-        // {
-        //     options.AllowedSchemes = ["https"];
-        // });
+        builder.AddOllamaClient();
 
         return builder;
     }
@@ -124,5 +120,21 @@ public static class Extensions
         }
 
         return app;
+    }
+
+    public static void AddOllamaClient(this IHostApplicationBuilder builder)
+    {
+        // Configure the named HTTP client used by Ollama
+        builder.Services.AddHttpClient("ollama")
+            .ConfigureHttpClient(client =>
+            {
+                client.Timeout = TimeSpan.FromMinutes(5);
+            });
+
+        builder.AddOllamaApiClient("ollama", options =>
+        {
+            options.SelectedModel = "phi3:mini";
+        })
+        .AddChatClient();
     }
 }
