@@ -16,6 +16,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\CSharpMeetsAI.Api\CSharpMeetsAI.Api.csproj" />
         <ProjectReference Include="..\CSharpMeetsAI.ServiceDefaults\CSharpMeetsAI.ServiceDefaults.csproj" />
     </ItemGroup>
 
