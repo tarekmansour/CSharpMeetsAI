@@ -125,11 +125,11 @@ public static class Extensions
     public static void AddOllamaClient(this IHostApplicationBuilder builder)
     {
         // Configure the named HTTP client used by Ollama
-        builder.Services.AddHttpClient("ollama")
-            .ConfigureHttpClient(client =>
-            {
-                client.Timeout = TimeSpan.FromMinutes(5);
-            });
+        //builder.Services.AddHttpClient("ollama")
+        //    .ConfigureHttpClient(client =>
+        //    {
+        //        client.Timeout = TimeSpan.FromMinutes(2);
+        //    });
 
         builder.AddOllamaApiClient("ollama", options =>
         {

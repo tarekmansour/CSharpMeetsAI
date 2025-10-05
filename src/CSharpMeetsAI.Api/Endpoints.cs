@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.AI;
 
-using OllamaSharp.Models.Chat;
-
 namespace CSharpMeetsAI.Api;
 
 public static class Endpoints
