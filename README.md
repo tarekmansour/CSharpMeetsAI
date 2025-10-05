@@ -1,4 +1,4 @@
-﻿# CSharpMeetsAI
+# CSharpMeetsAI
 
 A beginner-friendly exploration of AI integration with .NET and C#. This project uses for [Ollama](https://ollama.com/) and aims to try other tools to build real-world applications. Perfect for developers curious about **AI** and modern .NET capabilities.
 
@@ -9,6 +9,11 @@ A beginner-friendly exploration of AI integration with .NET and C#. This project
 - Experiment MCP Servers.
 - Experiment Microsoft Agent Framework.
 - Build simple, real-world AI-powered applications.
+
+## .NET Projects
+
+- `CSharpMeetsAI.AppHost`: Serves as the entry point and host for the application, managing configuration and startup logic.
+- `CSharpMeetsAI.ServiceDefaults`: Provides default implementations and shared utilities to support the service layer.
 
 ## 🛠️ Tools & Technologies
 
