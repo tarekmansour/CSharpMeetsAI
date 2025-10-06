@@ -1,6 +1,6 @@
 # CSharpMeetsAI
 
-A beginner-friendly exploration of AI integration with .NET and C#. This project uses for [Ollama](https://ollama.com/) and aims to try other tools to build real-world applications. Perfect for developers curious about **AI** and modern .NET capabilities.
+A beginner-friendly exploration of AI integration with .NET and C#. This project uses [Ollama](https://ollama.com/) and aims to try other tools to build real-world applications. Perfect for developers curious about **AI** and modern .NET capabilities.
 
 ## 🚀 Goals
 

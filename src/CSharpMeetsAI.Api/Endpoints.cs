@@ -1,3 +1,5 @@
+using System;
+
 using CSharpMeetsAI.Api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -31,6 +33,16 @@ public static class Endpoints
             }
 
             return await chatService.Chat(prompt, response, cancellationToken);
+        });
+
+        group.MapPost("v3/chat", async (
+            [FromBody] string prompt,
+            ChatService chatService,
+            CancellationToken cancellationToken) =>
+        {
+            var response = await chatService.Stream(prompt, cancellationToken);
+
+            return Results.Ok(response);
         });
     }
 }

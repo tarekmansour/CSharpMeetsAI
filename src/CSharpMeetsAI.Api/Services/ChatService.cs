@@ -1,9 +1,12 @@
 using Microsoft.Extensions.AI;
 
+using OllamaSharp.Models.Chat;
+
 namespace CSharpMeetsAI.Api.Services;
 
 public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
 {
+    private TimeSpan DefaultStreamItemTimeout = TimeSpan.FromMinutes(1);
     private const string ContentType = "text/plain; charset=utf-8";
     private readonly IChatClient _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
     private readonly ILogger<ChatService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -46,4 +49,36 @@ public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
             }
         }
     }
+
+
+    public async Task<string> Stream(string prompt, CancellationToken cancellationToken)
+    {
+        _logger.LogInformation("Streaming chat response started. Prompt: {Prompt}", prompt);
+        var allChunks = new List<ChatResponseUpdate>();
+
+        using var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        tokenSource.CancelAfter(DefaultStreamItemTimeout);
+
+        await foreach (var update in chatClient.GetStreamingResponseAsync(chatMessage: prompt, cancellationToken: cancellationToken))
+        {
+            // Extend the cancellation token's timeout for each update.
+            tokenSource.CancelAfter(DefaultStreamItemTimeout);
+
+            if (update.Text is not null)
+            {
+                allChunks.Add(update);
+            }
+        }
+
+        _logger.LogInformation("Streaming chat response completed successfully.");
+
+        if (allChunks.Count > 0)
+        {
+            var fullMessage = allChunks.ToChatResponse().Text;
+            return fullMessage;
+        }
+
+        return string.Empty;
+    }
+
 }
