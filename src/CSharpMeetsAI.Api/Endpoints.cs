@@ -1,5 +1,4 @@
-using System;
-
+using CSharpMeetsAI.Api.Requests;
 using CSharpMeetsAI.Api.Services;
 
 using Microsoft.AspNetCore.Mvc;
@@ -11,9 +10,10 @@ public static class Endpoints
 {
     public static void MapApiEndpoints(this WebApplication app)
     {
-        var group = app.MapGroup("/api/");
+        var group = app.MapGroup("/api/chat");
 
-        group.MapPost("v1/chat", async (
+        //single-shot response: no streaming
+        group.MapPost("/v1", async (
             [FromBody] string prompt,
             [FromServices] IChatClient chatClient) =>
         {
@@ -21,7 +21,8 @@ public static class Endpoints
             return Results.Ok(response);
         });
 
-        group.MapPost("v2/chat", async (
+        //Streaming
+        group.MapPost("/v2", async (
             [FromBody] string prompt,
             ChatService chatService,
             HttpResponse response,
@@ -32,17 +33,39 @@ public static class Endpoints
                 return Results.BadRequest("Prompt cannot be empty.");
             }
 
-            return await chatService.Chat(prompt, response, cancellationToken);
+            return await chatService.ChatAsync(prompt, response, cancellationToken);
         });
 
-        group.MapPost("v3/chat", async (
+        //Streaming with Timeout Control
+        group.MapPost("/v3", async (
             [FromBody] string prompt,
             ChatService chatService,
             CancellationToken cancellationToken) =>
         {
-            var response = await chatService.Stream(prompt, cancellationToken);
+            if (string.IsNullOrWhiteSpace(prompt))
+            {
+                return Results.BadRequest("Prompt cannot be empty.");
+            }
 
+            var response = await chatService.StreamWithChunksAsync(prompt, cancellationToken);
             return Results.Ok(response);
+        });
+
+        //Streaming with full request options
+        group.MapPost("/v4", async (
+            [FromBody] AiChatRequest request,
+            ChatService chatService,
+            HttpResponse response,
+            CancellationToken cancellationToken) =>
+        {
+            if (string.IsNullOrWhiteSpace(request.Prompt))
+            {
+                return Results.BadRequest("Prompt cannot be empty.");
+            }
+
+            response.ContentType = "text/plain; charset=utf-8";
+
+            return await chatService.StreamResponseToClientAsync(request, response, cancellationToken);
         });
     }
 }

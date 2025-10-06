@@ -1,6 +1,6 @@
-using Microsoft.Extensions.AI;
+using CSharpMeetsAI.Api.Requests;
 
-using OllamaSharp.Models.Chat;
+using Microsoft.Extensions.AI;
 
 namespace CSharpMeetsAI.Api.Services;
 
@@ -11,7 +11,7 @@ public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
     private readonly IChatClient _chatClient = chatClient ?? throw new ArgumentNullException(nameof(chatClient));
     private readonly ILogger<ChatService> _logger = logger ?? throw new ArgumentNullException(nameof(logger));
 
-    public async Task<IResult> Chat(string prompt, HttpResponse response, CancellationToken cancellationToken = default)
+    public async Task<IResult> ChatAsync(string prompt, HttpResponse response, CancellationToken cancellationToken = default)
     {
         response.ContentType = ContentType;
 
@@ -40,7 +40,7 @@ public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
 
     private async Task StreamResponseAsync(string prompt, HttpResponse response, CancellationToken cancellationToken)
     {
-        await foreach (var message in _chatClient.GetStreamingResponseAsync(prompt).WithCancellation(cancellationToken))
+        await foreach (var message in _chatClient.GetStreamingResponseAsync(chatMessage: prompt).WithCancellation(cancellationToken))
         {
             if (!string.IsNullOrEmpty(message.Text))
             {
@@ -50,35 +50,89 @@ public class ChatService(IChatClient chatClient, ILogger<ChatService> logger)
         }
     }
 
-
-    public async Task<string> Stream(string prompt, CancellationToken cancellationToken)
+    public async Task<string> StreamWithChunksAsync(string prompt, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Streaming chat response started. Prompt: {Prompt}", prompt);
         var allChunks = new List<ChatResponseUpdate>();
+        try
+        {
+            //creates a linked cancellation token that:
+                //Combines the original cancellationToken (from the HTTP request)
+                //Adds a timeout that resets every time you receive a new chunk
+            using var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+            tokenSource.CancelAfter(DefaultStreamItemTimeout);
 
+            await foreach (var update in chatClient.GetStreamingResponseAsync(chatMessage: prompt, cancellationToken: cancellationToken))
+            {
+                // Extend the cancellation token's timeout for each update.
+                tokenSource.CancelAfter(DefaultStreamItemTimeout);
+
+                if (update.Text is not null)
+                {
+                    allChunks.Add(update);
+                }
+            }
+
+            _logger.LogInformation("Streaming chat response completed successfully.");
+
+            if (allChunks.Count > 0)
+            {
+                var fullMessage = allChunks.ToChatResponse().Text;
+                return fullMessage;
+            }
+
+            return string.Empty;
+        }
+        catch (OperationCanceledException ex)
+        {
+            _logger.LogWarning(ex, "Chat stream canceled by client.");
+
+            if (allChunks.Count > 0)
+            {
+                var fullMessage = allChunks.ToChatResponse().Text;
+                return fullMessage;
+            }
+            return string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error while processing chat stream.");
+            throw;
+        }
+    }
+
+    public async Task<IResult> StreamResponseToClientAsync(AiChatRequest request, HttpResponse response, CancellationToken cancellationToken)
+    {
         using var tokenSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         tokenSource.CancelAfter(DefaultStreamItemTimeout);
 
-        await foreach (var update in chatClient.GetStreamingResponseAsync(chatMessage: prompt, cancellationToken: cancellationToken))
+        try
         {
-            // Extend the cancellation token's timeout for each update.
-            tokenSource.CancelAfter(DefaultStreamItemTimeout);
+            _logger.LogInformation("Streaming started for model {Model}. Prompt: {Prompt}", request.Model, request.Prompt);
 
-            if (update.Text is not null)
+            await foreach (var update in _chatClient.GetStreamingResponseAsync(chatMessage: request.Prompt, cancellationToken: tokenSource.Token))
             {
-                allChunks.Add(update);
+                tokenSource.CancelAfter(DefaultStreamItemTimeout); // rolling timeout
+
+                if (!string.IsNullOrEmpty(update.Text))
+                {
+                    await response.WriteAsync(update.Text, cancellationToken);
+                    await response.Body.FlushAsync(cancellationToken);
+                }
             }
+
+            _logger.LogInformation("Streaming completed successfully.");
+            return Results.Empty;
         }
-
-        _logger.LogInformation("Streaming chat response completed successfully.");
-
-        if (allChunks.Count > 0)
+        catch (OperationCanceledException ex)
         {
-            var fullMessage = allChunks.ToChatResponse().Text;
-            return fullMessage;
+            _logger.LogWarning(ex, "Streaming canceled.");
+            return Results.StatusCode(499);
         }
-
-        return string.Empty;
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Streaming error.");
+            return Results.Problem("An error occurred during streaming.");
+        }
     }
-
 }
